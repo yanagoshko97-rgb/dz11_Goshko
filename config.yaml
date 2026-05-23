@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: integrity-cluster
+
+spec:
+  containers:
+
+    - name: nginx-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+
+    - name: mysql-container
+      image: mysql:8.0
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root_password
+        - name: MYSQL_DATABASE
+          value: integrity_db
+        - name: MYSQL_USER
+          value: integrity_user
+        - name: MYSQL_PASSWORD
+          value: integrity_password
+
+    - name: phpmyadmin-container
+      image: phpmyadmin:latest
+      env:
+        - name: PMA_HOST
+          value: "127.0.0.1"
+        - name: PMA_PORT
+          value: "3306"
+        - name: APACHE_PORT
+          value: "8081"
+      ports:
+        - containerPort: 8081
+
+    - name: integrity-app-container
+      image: lr10-integrity-docker-integrity-app
+      env:
+        - name: DB_HOST
+          value: localhost
+        - name: DB_USER
+          value: root
+        - name: DB_PASSWORD
+          value: root_password
+        - name: DB_NAME
+          value: integrity_db
+      ports:
+        - containerPort: 8081
